@@ -1,1 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TCP Port Scanner</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="scanlines"></div>
 
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-icon">&#9679;</span>
+        <span class="brand-name">Port<span class="accent">Scanner</span></span>
+      </div>
+      <p class="tagline">
+        TCP port scanner &mdash; for auditing systems you own or have permission
+        to test
+      </p>
+    </header>
+
+    <main class="container">
+      <section class="panel form-panel">
+        <form id="scan-form">
+          <div class="field-row">
+            <div class="field field-target">
+              <label for="target">Target (IP or Hostname)</label>
+              <input
+                type="text"
+                id="target"
+                name="target"
+                placeholder="e.g. 192.168.1.1 or example.com"
+                autocomplete="off"
+                required
+              />
+            </div>
+            <div class="field field-port">
+              <label for="start_port">Start port</label>
+              <input
+                type="number"
+                id="start_port"
+                name="start_port"
+                min="1"
+                max="65535"
+                value="1"
+                required
+              />
+            </div>
+            <div class="field field-port">
+              <label for="end_port">End port</label>
+              <input
+                type="number"
+                id="end_port"
+                name="end_port"
+                min="1"
+                max="65535"
+                value="1024"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="presets">
+            <span class="presets-label">Quick ranges:</span>
+            <button
+              type="button"
+              class="preset-btn"
+              data-start="1"
+              data-end="1024"
+            >
+              Well-known (1&ndash;1024)
+            </button>
+            <button
+              type="button"
+              class="preset-btn"
+              data-start="1"
+              data-end="65535"
+            >
+              Full range (1&ndash;65535)
+            </button>
+            <button
+              type="button"
+              class="preset-btn"
+              data-start="20"
+              data-end="25"
+            >
+              FTP/SSH/Telnet/SMTP
+            </button>
+            <button
+              type="button"
+              class="preset-btn"
+              data-start="80"
+              data-end="8888"
+            >
+              Web-ish (80&ndash;8888)
+            </button>
+          </div>
+
+          <button type="submit" id="scan-btn" class="scan-btn">
+            <span class="btn-label">Start Scan</span>
+            <span class="btn-spinner" hidden></span>
+          </button>
+        </form>
+        <p id="error-box" class="error-box" hidden></p>
+      </section>
+
+      <section id="results-panel" class="panel results-panel" hidden>
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-value" id="stat-target">-</span>
+            <span class="stat-label">Target</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-total">-</span>
+            <span class="stat-label">Ports Checked</span>
+          </div>
+          <div class="stat-card stat-open">
+            <span class="stat-value" id="stat-open">-</span>
+            <span class="stat-label">Open</span>
+          </div>
+          <div class="stat-card stat-closed">
+            <span class="stat-value" id="stat-closed">-</span>
+            <span class="stat-label">Closed</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-time">-</span>
+            <span class="stat-label">Time Taken</span>
+          </div>
+        </div>
+
+        <div class="table-toolbar">
+          <div class="filter-group">
+            <button type="button" class="filter-btn active" data-filter="all">
+              All
+            </button>
+            <button type="button" class="filter-btn" data-filter="open">
+              Open
+            </button>
+            <button type="button" class="filter-btn" data-filter="closed">
+              Closed
+            </button>
+          </div>
+          <button type="button" id="download-csv" class="download-btn">
+            &#8681; Download CSV
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table id="results-table">
+            <thead>
+              <tr>
+                <th>Port</th>
+                <th>Status</th>
+                <th>Likely Service</th>
+              </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>
+        Only scan hosts and networks you own or are authorized to test. Scanning systems without permission may be illegal.
+      </p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
